@@ -1,6 +1,13 @@
 package lexer
 
-import "advanced-search/token"
+import (
+	"advanced-search/token"
+	"regexp"
+	"strings"
+)
+
+// Define a regular expression for ISO date format
+var isoDateRegex = regexp.MustCompile(`^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}(:\d{2})?(Z|(\+|-)\d{2}:\d{2})?)?$`)
 
 type Lexer struct {
 	input        string
@@ -10,6 +17,7 @@ type Lexer struct {
 }
 
 func New(input string) *Lexer {
+	input = strings.ToLower(input)
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
@@ -39,6 +47,15 @@ func (l *Lexer) NextToken() token.Token {
 			tok = token.Token{Type: token.EQ, Literal: literal}
 		} else {
 			tok = newToken(token.ASSIGN, l.ch)
+		}
+	case '!':
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{Type: token.NOT_EQ, Literal: literal}
+		} else {
+			tok = newToken(token.ILLEGAL, l.ch)
 		}
 	case '<':
 		if l.peekChar() == '=' {
@@ -74,8 +91,17 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type, tok.ValueType = token.LookupIdent(tok.Literal)
 			return tok
 		} else if isDigit(l.ch) {
+			literal := l.readNumber()
+			if l.ch == '-' || l.ch == 'T' {
+				literal += l.readDatePart()
+				if isISODate(literal) {
+					tok.Type = token.DATE
+					tok.Literal = literal
+					return tok
+				}
+			}
 			tok.Type = token.INT
-			tok.Literal = l.readNumber()
+			tok.Literal = literal
 			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
@@ -113,6 +139,14 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
+func (l *Lexer) readDatePart() string {
+	position := l.position
+	for isDigit(l.ch) || l.ch == '-' || l.ch == 'T' || l.ch == ':' || l.ch == 'Z' || l.ch == '+' {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
 func isDigit(ch byte) bool {
 	return '0' <= ch && ch <= '9'
 }
@@ -137,4 +171,9 @@ func isLetter(ch byte) bool {
 
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
+}
+
+// Add a function to check if a string matches the ISO date format
+func isISODate(s string) bool {
+	return isoDateRegex.MatchString(s)
 }

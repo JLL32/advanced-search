@@ -108,6 +108,13 @@ var keywords = map[string]TokenType{
 	"and": AND,
 }
 
+var sizeUnits = map[string]TokenType{
+	"kb": KB,
+	"mb": MB,
+	"gb": GB,
+	"tb": TB,
+}
+
 // Update LookupIdent to return both token type and value type
 func LookupIdent(ident string) (TokenType, ValueType) {
 	if tok, ok := keywords[ident]; ok {
@@ -115,6 +122,9 @@ func LookupIdent(ident string) (TokenType, ValueType) {
 	}
 	if info, ok := Identifiers[ident]; ok {
 		return info.Token, info.ValueType
+	}
+	if tok, ok := sizeUnits[ident]; ok {
+		return tok, ""
 	}
 	return STRING, TYPE_STRING
 }
