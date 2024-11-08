@@ -41,9 +41,19 @@ func (l *Lexer) NextToken() token.Token {
 			tok = newToken(token.ASSIGN, l.ch)
 		}
 	case '<':
-		tok = newToken(token.LT, l.ch)
+		if l.peekChar() == '=' {
+			l.readChar()
+			tok = token.Token{Type: token.LE, Literal: "<="}
+		} else {
+			tok = newToken(token.LT, l.ch)
+		}
 	case '>':
-		tok = newToken(token.GT, l.ch)
+		if l.peekChar() == '=' {
+			l.readChar()
+			tok = token.Token{Type: token.GE, Literal: ">="}
+		} else {
+			tok = newToken(token.GT, l.ch)
+		}
 	case '(':
 		tok = newToken(token.LPAREN, l.ch)
 	case ')':
