@@ -1,5 +1,7 @@
 package token
 
+import "strings"
+
 type TokenType string
 type ValueType string
 
@@ -37,10 +39,7 @@ const (
 	RPAREN = ")"
 
 	// Size units
-	KB = "KB"
-	MB = "MB"
-	GB = "GB"
-	TB = "TB"
+	UNIT = "UNIT"
 
 	// Search Identifiers
 	SIZE      = "SIZE"
@@ -109,10 +108,10 @@ var keywords = map[string]TokenType{
 }
 
 var sizeUnits = map[string]TokenType{
-	"kb": KB,
-	"mb": MB,
-	"gb": GB,
-	"tb": TB,
+	"kb": UNIT,
+	"mb": UNIT,
+	"gb": UNIT,
+	"tb": UNIT,
 }
 
 // Update LookupIdent to return both token type and value type
@@ -123,7 +122,7 @@ func LookupIdent(ident string) (TokenType, ValueType) {
 	if info, ok := Identifiers[ident]; ok {
 		return info.Token, info.ValueType
 	}
-	if tok, ok := sizeUnits[ident]; ok {
+	if tok, ok := sizeUnits[strings.ToLower(ident)]; ok {
 		return tok, ""
 	}
 	return STRING, TYPE_STRING

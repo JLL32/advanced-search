@@ -3,7 +3,6 @@ package lexer
 import (
 	"advanced-search/token"
 	"regexp"
-	"strings"
 )
 
 // Define a regular expression for ISO date format
@@ -17,7 +16,6 @@ type Lexer struct {
 }
 
 func New(input string) *Lexer {
-	input = strings.ToLower(input)
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
