@@ -48,6 +48,25 @@ var tests = []struct {
 			{token.EOF, "", ""},
 		},
 	},
+	{
+		input: `extension = dll or (type = macho and positives > 10)`,
+		expected: []token.Token{
+			{token.EXTENSION, "extension", token.TYPE_ENUM},
+			{token.ASSIGN, "=", ""},
+			{token.STRING, "dll", token.TYPE_STRING},
+			{token.OR, "or", ""},
+			{token.LPAREN, "(", ""},
+			{token.TYPE, "type", token.TYPE_ENUM},
+			{token.ASSIGN, "=", ""},
+			{token.STRING, "macho", token.TYPE_STRING},
+			{token.AND, "and", ""},
+			{token.POSITIVES, "positives", token.TYPE_INT},
+			{token.GT, ">", ""},
+			{token.INT, "10", token.TYPE_INT},
+			{token.RPAREN, ")", ""},
+			{token.EOF, "", ""},
+		},
+	},
 }
 
 func TestNextToken(t *testing.T) {
