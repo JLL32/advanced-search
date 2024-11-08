@@ -49,15 +49,19 @@ func (l *Lexer) NextToken() token.Token {
 	case ')':
 		tok = newToken(token.RPAREN, l.ch)
 	case '"':
-		tok.Type = token.IDENT
 		tok.Literal = l.readString()
+		if l.ch == '"' {
+			tok.Type = token.STRING
+		} else {
+			tok.Type = token.ILLEGAL
+		}
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
 	default:
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
-			tok.Type = token.LookupIdent(tok.Literal)
+			tok.Type, tok.ValueType = token.LookupIdent(tok.Literal)
 			return tok
 		} else if isDigit(l.ch) {
 			tok.Type = token.INT
