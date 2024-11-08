@@ -6,7 +6,7 @@ type ValueType string
 type Token struct {
 	Type      TokenType
 	Literal   string
-	ValueType ValueType // Add value type information
+	ValueType ValueType // value type is only associated with identifiers and literals
 }
 
 const (
@@ -15,16 +15,16 @@ const (
 
 	// literals
 	INT    = "INT"
-	STRING = "STRING" // Added token for string literals
-	DATE   = "DATE"   // Added token for date literals
+	STRING = "STRING"
+	DATE   = "DATE"
 
 	// Operators
 	ASSIGN = "="
 
 	LT = "<"
 	GT = ">"
-	LE = "<=" // Added token for less than or equal
-	GE = ">=" // Added token for greater than or equal
+	LE = "<="
+	GE = ">="
 
 	EQ     = "=="
 	NOT_EQ = "!="
@@ -37,10 +37,10 @@ const (
 	RPAREN = ")"
 
 	// Size units
-	KB = "KB" // Added token for kilobytes
-	MB = "MB" // Added token for megabytes
-	GB = "GB" // Added token for gigabytes
-	TB = "TB" // Added token for terabytes
+	KB = "KB"
+	MB = "MB"
+	GB = "GB"
+	TB = "TB"
 
 	// Search Identifiers
 	SIZE      = "SIZE"

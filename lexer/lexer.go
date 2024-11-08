@@ -79,6 +79,7 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Literal = l.readString()
 		if l.ch == '"' {
 			tok.Type = token.STRING
+			tok.ValueType = token.TYPE_STRING
 		} else {
 			tok.Type = token.ILLEGAL
 		}
@@ -97,11 +98,13 @@ func (l *Lexer) NextToken() token.Token {
 				if isISODate(literal) {
 					tok.Type = token.DATE
 					tok.Literal = literal
+					tok.ValueType = token.TYPE_DATE
 					return tok
 				}
 			}
 			tok.Type = token.INT
 			tok.Literal = literal
+			tok.ValueType = token.TYPE_INT
 			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
