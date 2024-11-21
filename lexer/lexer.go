@@ -76,8 +76,7 @@ func (l *Lexer) NextToken() token.Token {
 	case '"':
 		tok.Literal = l.readString()
 		if l.ch == '"' {
-			tok.Type = token.STRING
-			tok.ValueType = token.TYPE_STRING
+			tok.Type = token.IDENT
 		} else {
 			tok.Type = token.ILLEGAL
 		}
@@ -87,7 +86,7 @@ func (l *Lexer) NextToken() token.Token {
 	default:
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
-			tok.Type, tok.ValueType = token.LookupIdent(tok.Literal)
+			tok.Type = token.LookupIdent(tok.Literal)
 			return tok
 		} else if isDigit(l.ch) {
 			literal := l.readNumber()
@@ -96,13 +95,11 @@ func (l *Lexer) NextToken() token.Token {
 				if isISODate(literal) {
 					tok.Type = token.DATE
 					tok.Literal = literal
-					tok.ValueType = token.TYPE_DATE
 					return tok
 				}
 			}
 			tok.Type = token.INT
 			tok.Literal = literal
-			tok.ValueType = token.TYPE_INT
 			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)

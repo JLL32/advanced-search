@@ -12,59 +12,59 @@ var tests = []struct {
 	{
 		input: `size >= 1000kb type = pe fs < 2020-12-31 name = "example" positives != 0`,
 		expected: []token.Token{
-			{token.SIZE, "size", token.TYPE_INT},
-			{token.GE, ">=", ""},
-			{token.INT, "1000", token.TYPE_INT},
-			{token.UNIT, "kb", ""},
-			{token.TYPE, "type", token.TYPE_ENUM},
-			{token.ASSIGN, "=", ""},
-			{token.STRING, "pe", token.TYPE_STRING},
-			{token.FS, "fs", token.TYPE_DATE},
-			{token.LT, "<", ""},
-			{token.DATE, "2020-12-31", token.TYPE_DATE},
-			{token.NAME, "name", token.TYPE_STRING},
-			{token.ASSIGN, "=", ""},
-			{token.STRING, "example", token.TYPE_STRING},
-			{token.POSITIVES, "positives", token.TYPE_INT},
-			{token.NOT_EQ, "!=", ""},
-			{token.INT, "0", token.TYPE_INT},
-			{token.EOF, "", ""},
+			{Type: token.IDENT, Literal: "size"},
+			{Type: token.GE, Literal: ">="},
+			{Type: token.INT, Literal: "1000"},
+			{Type: token.UNIT, Literal: "kb"},
+			{Type: token.IDENT, Literal: "type"},
+			{Type: token.ASSIGN, Literal: "="},
+			{Type: token.IDENT, Literal: "pe"},
+			{Type: token.IDENT, Literal: "fs"},
+			{Type: token.LT, Literal: "<"},
+			{Type: token.DATE, Literal: "2020-12-31"},
+			{Type: token.IDENT, Literal: "name"},
+			{Type: token.ASSIGN, Literal: "="},
+			{Type: token.IDENT, Literal: "example"},
+			{Type: token.IDENT, Literal: "positives"},
+			{Type: token.NOT_EQ, Literal: "!="},
+			{Type: token.INT, Literal: "0"},
+			{Type: token.EOF, Literal: ""},
 		},
 	},
 	{
 		input: `type = elf and fs >= 2021-01-01T00:00:00Z or positives < 5`,
 		expected: []token.Token{
-			{token.TYPE, "type", token.TYPE_ENUM},
-			{token.ASSIGN, "=", ""},
-			{token.STRING, "elf", token.TYPE_STRING},
-			{token.AND, "and", ""},
-			{token.FS, "fs", token.TYPE_DATE},
-			{token.GE, ">=", ""},
-			{token.DATE, "2021-01-01T00:00:00Z", token.TYPE_DATE},
-			{token.OR, "or", ""},
-			{token.POSITIVES, "positives", token.TYPE_INT},
-			{token.LT, "<", ""},
-			{token.INT, "5", token.TYPE_INT},
-			{token.EOF, "", ""},
+			{Type: token.IDENT, Literal: "type"},
+			{Type: token.ASSIGN, Literal: "="},
+			{Type: token.IDENT, Literal: "elf"},
+			{Type: token.AND, Literal: "and"},
+			{Type: token.IDENT, Literal: "fs"},
+			{Type: token.GE, Literal: ">="},
+			{Type: token.DATE, Literal: "2021-01-01T00:00:00Z"},
+			{Type: token.OR, Literal: "or"},
+			{Type: token.IDENT, Literal: "positives"},
+			{Type: token.LT, Literal: "<"},
+			{Type: token.INT, Literal: "5"},
+			{Type: token.EOF, Literal: ""},
 		},
 	},
 	{
 		input: `extension = dll or (type = macho and positives > 10)`,
 		expected: []token.Token{
-			{token.EXTENSION, "extension", token.TYPE_ENUM},
-			{token.ASSIGN, "=", ""},
-			{token.STRING, "dll", token.TYPE_STRING},
-			{token.OR, "or", ""},
-			{token.LPAREN, "(", ""},
-			{token.TYPE, "type", token.TYPE_ENUM},
-			{token.ASSIGN, "=", ""},
-			{token.STRING, "macho", token.TYPE_STRING},
-			{token.AND, "and", ""},
-			{token.POSITIVES, "positives", token.TYPE_INT},
-			{token.GT, ">", ""},
-			{token.INT, "10", token.TYPE_INT},
-			{token.RPAREN, ")", ""},
-			{token.EOF, "", ""},
+			{Type: token.IDENT, Literal: "extension"},
+			{Type: token.ASSIGN, Literal: "="},
+			{Type: token.IDENT, Literal: "dll"},
+			{Type: token.OR, Literal: "or"},
+			{Type: token.LPAREN, Literal: "("},
+			{Type: token.IDENT, Literal: "type"},
+			{Type: token.ASSIGN, Literal: "="},
+			{Type: token.IDENT, Literal: "macho"},
+			{Type: token.AND, Literal: "and"},
+			{Type: token.IDENT, Literal: "positives"},
+			{Type: token.GT, Literal: ">"},
+			{Type: token.INT, Literal: "10"},
+			{Type: token.RPAREN, Literal: ")"},
+			{Type: token.EOF, Literal: ""},
 		},
 	},
 }
@@ -81,7 +81,7 @@ func TestNextToken(t *testing.T) {
 				tok := l.NextToken()
 
 				if tok.Type != expectedToken.Type {
-					t.Fatalf("tests[%d][%d] - tokentype wrong. expected=%q, got=%q",
+					t.Fatalf("tests[%d][%d] - token type wrong. expected=%q, got=%q",
 						i, j, expectedToken.Type, tok.Type)
 				}
 
@@ -89,13 +89,7 @@ func TestNextToken(t *testing.T) {
 					t.Fatalf("tests[%d][%d] - literal wrong. expected=%q, got=%q",
 						i, j, expectedToken.Literal, tok.Literal)
 				}
-
-				if tok.ValueType != expectedToken.ValueType {
-					t.Fatalf("tests[%d][%d] - valuetype wrong. expected=%q, got=%q",
-						i, j, expectedToken.ValueType, tok.ValueType)
-				}
 			}
-
 		})
 	}
 }
