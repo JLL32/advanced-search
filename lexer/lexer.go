@@ -17,11 +17,11 @@ type Lexer struct {
 
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
-	l.readChar()
+	l.eatChar()
 	return l
 }
 
-func (l *Lexer) readChar() {
+func (l *Lexer) eatChar() {
 	if l.readPosition >= len(l.input) {
 		l.ch = 0
 	} else {
@@ -40,7 +40,7 @@ func (l *Lexer) NextToken() token.Token {
 	case '=':
 		if l.peekChar() == '=' {
 			ch := l.ch
-			l.readChar()
+			l.eatChar()
 			literal := string(ch) + string(l.ch)
 			tok = token.Token{Type: token.EQ, Literal: literal}
 		} else {
@@ -49,7 +49,7 @@ func (l *Lexer) NextToken() token.Token {
 	case '!':
 		if l.peekChar() == '=' {
 			ch := l.ch
-			l.readChar()
+			l.eatChar()
 			literal := string(ch) + string(l.ch)
 			tok = token.Token{Type: token.NOT_EQ, Literal: literal}
 		} else {
@@ -57,14 +57,14 @@ func (l *Lexer) NextToken() token.Token {
 		}
 	case '<':
 		if l.peekChar() == '=' {
-			l.readChar()
+			l.eatChar()
 			tok = token.Token{Type: token.LE, Literal: "<="}
 		} else {
 			tok = newToken(token.LT, l.ch)
 		}
 	case '>':
 		if l.peekChar() == '=' {
-			l.readChar()
+			l.eatChar()
 			tok = token.Token{Type: token.GE, Literal: ">="}
 		} else {
 			tok = newToken(token.GT, l.ch)
@@ -106,7 +106,7 @@ func (l *Lexer) NextToken() token.Token {
 		}
 	}
 
-	l.readChar()
+	l.eatChar()
 	return tok
 }
 
@@ -121,7 +121,7 @@ func (l *Lexer) peekChar() byte {
 func (l *Lexer) readString() string {
 	position := l.position + 1
 	for {
-		l.readChar()
+		l.eatChar()
 		if l.ch == '"' || l.ch == 0 {
 			break
 		}
@@ -132,7 +132,7 @@ func (l *Lexer) readString() string {
 func (l *Lexer) readNumber() string {
 	position := l.position
 	for isDigit(l.ch) {
-		l.readChar()
+		l.eatChar()
 	}
 	return l.input[position:l.position]
 }
@@ -140,7 +140,7 @@ func (l *Lexer) readNumber() string {
 func (l *Lexer) readDatePart() string {
 	position := l.position
 	for isDigit(l.ch) || l.ch == '-' || l.ch == 'T' || l.ch == ':' || l.ch == 'Z' || l.ch == '+' {
-		l.readChar()
+		l.eatChar()
 	}
 	return l.input[position:l.position]
 }
@@ -151,14 +151,14 @@ func isDigit(ch byte) bool {
 
 func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
-		l.readChar()
+		l.eatChar()
 	}
 }
 
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
-		l.readChar()
+		l.eatChar()
 	}
 	return l.input[position:l.position]
 }
