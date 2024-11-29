@@ -56,7 +56,7 @@ var sizeUnits = map[string]TokenType{
 
 // Update LookupIdent to return both token type and value type
 func LookupIdent(ident string) TokenType {
-	if tok, ok := keywords[ident]; ok {
+	if tok, ok := keywords[strings.ToLower(ident)]; ok {
 		return tok
 	}
 	if tok, ok := sizeUnits[strings.ToLower(ident)]; ok {
