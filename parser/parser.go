@@ -48,6 +48,36 @@ func New(tokens []*token.Token) *Parser {
 	}
 }
 
+func (p *Parser) eatToken() *token.Token {
+	if p.current >= len(p.tokens) {
+		return &token.Token{Type: token.EOF, Literal: ""}
+	}
+
+	tok := p.tokens[p.current]
+	p.current++
+	return tok
+}
+
+func (p *Parser) peekToken() *token.Token {
+	if p.current >= len(p.tokens) {
+		return &token.Token{Type: token.EOF, Literal: ""}
+	}
+
+	return p.tokens[p.current]
+}
+
+func (p *Parser) match(tokenType token.TokenType) bool {
+	if p.current >= len(p.tokens) {
+		return false
+	}
+
+	return p.tokens[p.current].Type == tokenType
+}
+
+func (p *Parser) Parse() (Expression, error) {
+	return p.ParseExpression()
+}
+
 func (p *Parser) ParseExpression() (Expression, error) {
 	expr, err := p.parseComparison()
 	if err != nil {
@@ -56,13 +86,12 @@ func (p *Parser) ParseExpression() (Expression, error) {
 
 	// Look for AND/OR operators
 	for p.current < len(p.tokens) {
-		if p.tokens[p.current].Type != token.AND &&
-			p.tokens[p.current].Type != token.OR {
+		if !p.match(token.AND) &&
+			!p.match(token.OR) {
 			break
 		}
 
-		operator := p.tokens[p.current]
-		p.current++
+		operator := p.eatToken()
 
 		right, err := p.parseComparison()
 		if err != nil {
@@ -84,22 +113,19 @@ func (p *Parser) parseComparison() (Expression, error) {
 		return nil, fmt.Errorf("unexpected end of input")
 	}
 
-	left := p.tokens[p.current]
-	p.current++
+	left := p.eatToken()
 
 	if p.current >= len(p.tokens) {
 		return nil, fmt.Errorf("expected operator after %s", left.Literal)
 	}
 
-	operator := p.tokens[p.current]
-	p.current++
+	operator := p.eatToken()
 
 	if p.current >= len(p.tokens) {
 		return nil, fmt.Errorf("expected value after operator")
 	}
 
-	right := p.tokens[p.current]
-	p.current++
+	right := p.eatToken()
 
 	return &ComparisonExpression{
 		Left:     left.Literal,
