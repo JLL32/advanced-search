@@ -79,18 +79,40 @@ func (p *Parser) Parse() (Expression, error) {
 }
 
 func (p *Parser) ParseExpression() (Expression, error) {
+	return p.ParseOr()
+}
+
+func (p *Parser) ParseOr() (Expression, error) {
+	expr, err := p.parseAnd()
+	if err != nil {
+		return nil, err
+	}
+
+	for p.match(token.OR) {
+		operator := p.eatToken()
+
+		right, err := p.parseAnd()
+		if err != nil {
+			return nil, err
+		}
+
+		expr = &BinaryExpression{
+			Left:     expr,
+			Operator: operator,
+			Right:    right,
+		}
+	}
+
+	return expr, nil
+}
+
+func (p *Parser) parseAnd() (Expression, error) {
 	expr, err := p.parseComparison()
 	if err != nil {
 		return nil, err
 	}
 
-	// Look for AND/OR operators
-	for p.current < len(p.tokens) {
-		if !p.match(token.AND) &&
-			!p.match(token.OR) {
-			break
-		}
-
+	for p.match(token.AND) {
 		operator := p.eatToken()
 
 		right, err := p.parseComparison()
