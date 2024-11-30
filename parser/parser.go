@@ -130,6 +130,22 @@ func (p *Parser) parseAnd() (Expression, error) {
 		}
 	}
 
+	// two expressions separated by a space are implicitly ANDed
+	for p.match(token.IDENT) {
+		operator := token.Token{Type: token.AND, Literal: "AND"}
+
+		right, err := p.parseComparison()
+		if err != nil {
+			return nil, err
+		}
+
+		expr = &BinaryExpression{
+			Left:     expr,
+			Operator: &operator,
+			Right:    right,
+		}
+	}
+
 	return expr, nil
 }
 
