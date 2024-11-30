@@ -3,6 +3,9 @@ package parser
 import (
 	"advanced-search/token"
 	"fmt"
+	"math"
+	"strconv"
+	"strings"
 )
 
 // AST node types
@@ -136,6 +139,7 @@ func (p *Parser) parseComparison() (Expression, error) {
 	}
 
 	left := p.eatToken()
+	left.Literal = p.applyUnitIfExist(*left)
 
 	if p.current >= len(p.tokens) {
 		return nil, fmt.Errorf("expected operator after %s", left.Literal)
@@ -148,10 +152,35 @@ func (p *Parser) parseComparison() (Expression, error) {
 	}
 
 	right := p.eatToken()
+	right.Literal = p.applyUnitIfExist(*right)
 
 	return &ComparisonExpression{
 		Left:     left.Literal,
 		Operator: operator,
 		Right:    right.Literal,
 	}, nil
+}
+
+func (p *Parser) applyUnitIfExist(ident token.Token) string {
+
+	if ident.Type != token.INT || !p.match(token.UNIT) {
+		return ident.Literal
+	}
+
+	unit := p.eatToken()
+
+	num, err := strconv.Atoi(ident.Literal)
+	if err != nil {
+		// since the lexer always returns valid numbers
+		// Atoi would fail only if the number exceeds int32
+		return string(math.MaxInt32)
+	}
+
+	units := map[string]int{
+		"kb": 1000,
+		"mb": 1000_000,
+		"gb": 1000_000_000,
+		"tb": 1000_000_000_000,
+	}
+	return strconv.Itoa(num * units[strings.ToLower(unit.Literal)])
 }
