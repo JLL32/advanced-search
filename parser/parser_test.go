@@ -114,7 +114,7 @@ func TestAndOrPrecedence(t *testing.T) {
 			},
 		},
 		{
-			"type=pe OR tag=upx AND size>1000",
+			"type=pe OR tag=upx size>1000",
 			&BinaryExpression{
 				Left: &ComparisonExpression{
 					Left:     "type",
