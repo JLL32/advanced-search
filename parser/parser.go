@@ -189,7 +189,7 @@ func (p *Parser) applyUnitIfExist(ident token.Token) string {
 	if err != nil {
 		// since the lexer always returns valid numbers
 		// Atoi would fail only if the number exceeds int32
-		return string(math.MaxInt32)
+		return strconv.Itoa(math.MaxInt32)
 	}
 
 	units := map[string]int{
