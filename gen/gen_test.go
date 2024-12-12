@@ -18,6 +18,14 @@ func TestGenerateSQL(t *testing.T) {
 		{"fs<=2023-01-01", "fs <= '2023-01-01'"},
 		{"type=pe and tag=upx OR size>1000mb", "((type = 'pe' AND tag = 'upx') OR size > '1000000000')"},
 		{"type=pe or tag=upx size>1000 kb", "(type = 'pe' OR (tag = 'upx' AND size > '1000000'))"},
+		{"(type=pe or tag=upx) size>1000 kb", "((type = 'pe' OR tag = 'upx') AND size > '1000000')"},
+		{"tag=upx", "tag = 'upx'"},
+		{"size<500", "size < '500'"},
+		{"name=test.exe", "name = 'test.exe'"},
+		{"fs>=2022-12-31", "fs >= '2022-12-31'"},
+		{"type=pe and (tag=upx or size>1000mb)", "(type = 'pe' AND (tag = 'upx' OR size > '1000000000'))"},
+		{"(type=pe and tag=upx) or size>1000kb", "((type = 'pe' AND tag = 'upx') OR size > '1000000')"},
+		{"type=pe and tag=upx and size>1000kb", "(type = 'pe' AND (tag = 'upx' AND size > '1000000'))"},
 	}
 
 	for _, tt := range tests {

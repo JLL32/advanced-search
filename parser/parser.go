@@ -110,15 +110,34 @@ func (p *Parser) ParseOr() (Expression, error) {
 }
 
 func (p *Parser) parseAnd() (Expression, error) {
-	expr, err := p.parseComparison()
-	if err != nil {
-		return nil, err
+	var expr Expression
+
+	if p.match(token.LPAREN) {
+		p.eatToken()
+		exp, err := p.ParseExpression()
+		if err != nil {
+			return nil, err
+		}
+
+		if !p.match(token.RPAREN) {
+			return nil, fmt.Errorf("expected closing parenthesis")
+		}
+		p.eatToken() // eat closing parenthesis
+
+		expr = exp
+	} else {
+		exp, err := p.parseComparison()
+		if err != nil {
+			return nil, err
+		}
+
+		expr = exp
 	}
 
 	for p.match(token.AND) {
 		operator := p.eatToken()
 
-		right, err := p.parseComparison()
+		right, err := p.parseAnd()
 		if err != nil {
 			return nil, err
 		}
