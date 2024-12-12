@@ -2,6 +2,7 @@ package gen
 
 import (
 	"advanced-search/parser"
+	"advanced-search/token"
 	"fmt"
 )
 
@@ -25,7 +26,16 @@ func generateBinarySQL(expr *parser.BinaryExpression) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("(%s %s %s)", left, expr.Operator.Literal, right), nil
+
+	switch expr.Operator.Type {
+	case token.AND:
+		return fmt.Sprintf("(%s AND %s)", left, right), nil
+	case token.OR:
+		return fmt.Sprintf("(%s OR %s)", left, right), nil
+
+	default:
+		return "", fmt.Errorf("unsupported operator type: %T", expr.Operator.Type)
+	}
 }
 
 func generateComparisonSQL(expr *parser.ComparisonExpression) (string, error) {
