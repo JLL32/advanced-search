@@ -1,7 +1,7 @@
 package main
 
 import (
-	"advanced-search/repl"
+	"github.com/saferwall/advanced-search/repl"
 	// "fmt"
 	"os"
 	// "os/user"

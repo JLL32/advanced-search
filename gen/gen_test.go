@@ -1,10 +1,11 @@
 package gen
 
 import (
-	"advanced-search/lexer"
-	"advanced-search/parser"
-	"advanced-search/token"
 	"testing"
+
+	"github.com/saferwall/advanced-search/lexer"
+	"github.com/saferwall/advanced-search/parser"
+	"github.com/saferwall/advanced-search/token"
 )
 
 func TestGenerateSQL(t *testing.T) {

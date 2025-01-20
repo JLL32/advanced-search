@@ -1,8 +1,9 @@
 package lexer
 
 import (
-	"advanced-search/token"
 	"regexp"
+
+	"github.com/saferwall/advanced-search/token"
 )
 
 // Define a regular expression for ISO date format

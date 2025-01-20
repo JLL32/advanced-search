@@ -1,10 +1,11 @@
 package parser
 
 import (
-	"advanced-search/lexer"
-	"advanced-search/token"
 	"fmt"
 	"testing"
+
+	"github.com/saferwall/advanced-search/lexer"
+	"github.com/saferwall/advanced-search/token"
 )
 
 func TestSimpleComparison(t *testing.T) {

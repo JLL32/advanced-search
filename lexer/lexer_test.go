@@ -1,8 +1,9 @@
 package lexer
 
 import (
-	"advanced-search/token"
 	"testing"
+
+	"github.com/saferwall/advanced-search/token"
 )
 
 var tests = []struct {

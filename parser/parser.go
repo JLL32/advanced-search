@@ -1,11 +1,12 @@
 package parser
 
 import (
-	"advanced-search/token"
 	"fmt"
 	"math"
 	"strconv"
 	"strings"
+
+	"github.com/saferwall/advanced-search/token"
 )
 
 // AST node types

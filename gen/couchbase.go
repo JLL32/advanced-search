@@ -1,9 +1,10 @@
 package gen
 
 import (
-	"advanced-search/parser"
-	"advanced-search/token"
 	"fmt"
+
+	"github.com/saferwall/advanced-search/parser"
+	"github.com/saferwall/advanced-search/token"
 )
 
 func GenerateCouchbaseFTS(expr parser.Expression) (map[string]interface{}, error) {

@@ -1,11 +1,12 @@
 package repl
 
 import (
-	"advanced-search/lexer"
-	"advanced-search/token"
 	"bufio"
 	"fmt"
 	"io"
+
+	"github.com/saferwall/advanced-search/lexer"
+	"github.com/saferwall/advanced-search/token"
 )
 
 const PROMPT = ">> "
